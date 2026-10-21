@@ -1,5 +1,5 @@
-app/public/wp-config.php
-app/public/wp-content/uploads/
+wp-config.php
+wp-content/uploads/
 logs/
 migration-backups/
 *.sql
