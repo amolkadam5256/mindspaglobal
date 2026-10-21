@@ -1,0 +1,7 @@
+app/public/wp-config.php
+app/public/wp-content/uploads/
+logs/
+migration-backups/
+*.sql
+*.tar.gz
+.env*
