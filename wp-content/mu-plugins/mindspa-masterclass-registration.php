@@ -146,6 +146,8 @@ add_action( 'wp_footer', function () {
 			document.addEventListener('DOMContentLoaded', function () {
 				document.querySelectorAll('a[href*="rzp.io"]').forEach(function (link) {
 					link.setAttribute('href', '<?php echo esc_url( home_url( '/#contact' ) ); ?>');
+					link.setAttribute('target', '_self');
+					link.removeAttribute('rel');
 				});
 			var modal = document.getElementById('mindspa-registration-modal');
 			if (!modal) return;
