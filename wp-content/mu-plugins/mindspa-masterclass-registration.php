@@ -186,3 +186,66 @@ add_action( 'wp_footer', function () {
 	</style>
 	<?php
 } );
+
+/**
+ * Elementor's canvas template omits the theme footer. Add a lightweight,
+ * accessible footer to the public landing page without changing the theme.
+ */
+add_action( 'wp_footer', function () {
+	if ( is_admin() || ! is_front_page() ) {
+		return;
+	}
+
+	$home_url    = home_url( '/' );
+	$contact_url = 'mailto:training.mindspaglobal@gmail.com';
+	?>
+	<footer class="mindspa-site-footer" role="contentinfo">
+		<div class="mindspa-site-footer__grid">
+			<section class="mindspa-site-footer__brand" aria-label="About MindSpa Global">
+				<a class="mindspa-site-footer__name" href="<?php echo esc_url( $home_url ); ?>">MindSpa Global</a>
+				<p>Evidence-informed psychology, mindfulness and Neuro-Mind Reprogramming support for meaningful personal growth.</p>
+			</section>
+			<nav class="mindspa-site-footer__links" aria-label="Footer navigation">
+				<h2>Explore</h2>
+				<a href="<?php echo esc_url( $home_url ); ?>">Home</a>
+				<a href="#mindspa-registration-modal" data-mindspa-footer-register>Masterclass registration</a>
+				<a href="<?php echo esc_url( $contact_url ); ?>">Contact us</a>
+			</nav>
+			<section class="mindspa-site-footer__contact" aria-label="Contact details">
+				<h2>Get in touch</h2>
+				<p>For session and masterclass enquiries:</p>
+				<a href="<?php echo esc_url( $contact_url ); ?>">training.mindspaglobal@gmail.com</a>
+			</section>
+		</div>
+		<div class="mindspa-site-footer__bottom">
+			<p>&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> MindSpa Global. All rights reserved.</p>
+		</div>
+	</footer>
+	<style>
+		.mindspa-site-footer { margin-top: 0; background: #242342; color: #f5f3fb; font-family: inherit; }
+		.mindspa-site-footer__grid { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr)); gap: 42px; width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 56px 0 44px; }
+		.mindspa-site-footer__name { display: inline-block; margin-bottom: 12px; color: #fff; font-size: 24px; font-weight: 700; line-height: 1.2; text-decoration: none; }
+		.mindspa-site-footer p { margin: 0; color: #d8d4e6; font-size: 15px; line-height: 1.7; }
+		.mindspa-site-footer h2 { margin: 0 0 14px; color: #fff; font-size: 16px; line-height: 1.3; }
+		.mindspa-site-footer__links { display: grid; align-content: start; gap: 9px; }
+		.mindspa-site-footer a { color: #f5f3fb; text-underline-offset: 3px; }
+		.mindspa-site-footer a:hover, .mindspa-site-footer a:focus { color: #f7b75b; }
+		.mindspa-site-footer__contact { display: grid; align-content: start; gap: 10px; }
+		.mindspa-site-footer__bottom { border-top: 1px solid rgba(255, 255, 255, .16); }
+		.mindspa-site-footer__bottom p { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 18px 0; font-size: 13px; }
+		@media (max-width: 720px) { .mindspa-site-footer__grid { grid-template-columns: 1fr; gap: 30px; padding: 42px 0 34px; } }
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var registerLink = document.querySelector('[data-mindspa-footer-register]');
+			var modal = document.getElementById('mindspa-registration-modal');
+			if (!registerLink || !modal) return;
+			registerLink.addEventListener('click', function (event) {
+				event.preventDefault();
+				modal.hidden = false;
+				document.body.classList.add('mindspa-modal-open');
+			});
+		});
+	</script>
+	<?php
+} );
