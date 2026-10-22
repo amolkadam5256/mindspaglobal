@@ -82,8 +82,8 @@ function mindspa_registration_form() {
 	$status = isset( $_GET['mindspa_registration'] ) ? sanitize_key( $_GET['mindspa_registration'] ) : '';
 	$output = $status === 'success' ? '<p class="mindspa-registration-success">Thank you. Your registration enquiry has been received.</p>' : '';
 	$output .= $status === 'invalid' ? '<p class="mindspa-registration-error">Please complete all required fields and provide a valid email address.</p>' : '';
-	$output .= '<form class="mindspa-registration-form" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><h2>Reserve Your Seat</h2><p class="mindspa-registration-intro">Register your interest in the Neuro-Mind Gym Masterclass</p>';
-	$output .= '<input type="hidden" name="action" value="mindspa_register"><input type="hidden" name="utm_source" value=""><input type="hidden" name="utm_medium" value=""><input type="hidden" name="utm_campaign" value="">';
+	$output .= '<form class="mindspa-registration-form" method="post" action="https://api.web3forms.com/submit" data-mindspa-web3forms><h2>Reserve Your Seat</h2><p class="mindspa-registration-intro">Register your interest in the Neuro-Mind Gym Masterclass</p>';
+	$output .= '<input type="hidden" name="access_key" value="f1a6a76e-5680-43f4-a8e9-d630f72a65e1"><input type="hidden" name="subject" value="New MindSpa Global Masterclass Registration"><input type="hidden" name="utm_source" value=""><input type="hidden" name="utm_medium" value=""><input type="hidden" name="utm_campaign" value="">';
 	$output .= wp_nonce_field( 'mindspa_registration', 'mindspa_registration_nonce', true, false );
 	$output .= '<p><label>Full Name *<input type="text" name="full_name" required></label></p><p><label>Email Address *<input type="email" name="email" required></label></p><p><label>Phone / WhatsApp Number *<input type="tel" name="phone" required></label></p><p><label>City / Location *<input type="text" name="city" required></label></p>';
 	$output .= '<p><label>Profession *<select name="profession" required><option value="">Select profession</option><option>Working Professional</option><option>Business Owner / Entrepreneur</option><option>Student</option><option>Homemaker</option><option>Corporate Leader / HR</option><option>Other</option></select></label></p>';
@@ -127,6 +127,7 @@ add_action( 'wp_head', function () {
 		.mindspa-registration-success, .mindspa-registration-error { max-width: 760px; margin: 24px auto; padding: 16px 20px; border-radius: 10px; font-weight: 600; }
 		.mindspa-registration-success { background: #edf9f1; color: #176b35; }
 		.mindspa-registration-error { background: #fff1f1; color: #a12626; }
+		.mindspa-registration-status { margin: 0 0 14px; padding: 10px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; }
 		@media (max-width: 640px) { .mindspa-registration-form { margin: 10px auto; padding: 22px 18px; border-radius: 14px; } }
 	</style>
 	<?php
@@ -160,10 +161,54 @@ add_action( 'wp_footer', function () {
 			var close = function () { modal.hidden = true; document.body.classList.remove('mindspa-modal-open'); };
 			modal.querySelectorAll('[data-mindspa-close]').forEach(function (button) { button.addEventListener('click', close); });
 			document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });
-			modal.querySelectorAll('form').forEach(function (form) {
-				form.addEventListener('submit', function () {
-					sessionStorage.setItem('mindspa_registration_popup_submitted', '1');
-					close();
+			document.querySelectorAll('[data-mindspa-web3forms]').forEach(function (form) {
+				form.addEventListener('submit', async function (event) {
+					event.preventDefault();
+					var submitButton = form.querySelector('button[type="submit"]');
+					var status = form.querySelector('.mindspa-registration-status');
+					if (!status) {
+						status = document.createElement('p');
+						status.className = 'mindspa-registration-status';
+						status.setAttribute('role', 'status');
+						form.insertBefore(status, form.firstChild);
+					}
+					var formData = new FormData(form);
+					formData.set('name', formData.get('full_name') || 'MindSpa Global visitor');
+					formData.set('message', [
+						'Phone / WhatsApp: ' + (formData.get('phone') || ''),
+						'City / Location: ' + (formData.get('city') || ''),
+						'Profession: ' + (formData.get('profession') || ''),
+						'Primary interest: ' + (formData.get('goal') || ''),
+						'Session mode: ' + (formData.get('session_mode') || '')
+					].join('\n'));
+					var originalText = submitButton.textContent;
+					submitButton.textContent = 'Sending...';
+					submitButton.disabled = true;
+					status.hidden = true;
+
+					try {
+						var response = await fetch(form.action, { method: 'POST', body: formData });
+						var data = await response.json();
+						if (!response.ok || !data.success) {
+							throw new Error(data.message || 'Unable to send your registration.');
+						}
+						form.reset();
+						if (modal.contains(form)) {
+							sessionStorage.setItem('mindspa_registration_popup_submitted', '1');
+							close();
+						} else {
+							status.className = 'mindspa-registration-status mindspa-registration-success';
+							status.textContent = 'Thank you. Your registration has been sent.';
+							status.hidden = false;
+						}
+					} catch (error) {
+						status.className = 'mindspa-registration-status mindspa-registration-error';
+						status.textContent = error.message || 'Something went wrong. Please try again.';
+						status.hidden = false;
+					} finally {
+						submitButton.textContent = originalText;
+						submitButton.disabled = false;
+					}
 				});
 			});
 			if (sessionStorage.getItem('mindspa_registration_popup_submitted')) {
