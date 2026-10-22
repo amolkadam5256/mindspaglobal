@@ -85,6 +85,11 @@ function mindspa_registration_form() {
 add_shortcode( 'mindspa_masterclass_registration', 'mindspa_registration_form' );
 
 add_filter( 'the_content', function ( $content ) {
+	$contact_url = esc_url( home_url( '/contact/' ) );
+	return preg_replace( '/href=(["\'])https?:\/\/rzp\.io\/[^"\']+\1/i', 'href=$1' . $contact_url . '$1', $content );
+}, 20 );
+
+add_filter( 'the_content', function ( $content ) {
 	if ( is_admin() || ! is_singular( 'page' ) || ! preg_match( '/neuro|masterclass/i', get_the_title() . ' ' . $content ) || has_shortcode( $content, 'mindspa_masterclass_registration' ) ) {
 		return $content;
 	}
@@ -138,7 +143,10 @@ add_action( 'wp_footer', function () {
 		</div>
 	</div>
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+			document.addEventListener('DOMContentLoaded', function () {
+				document.querySelectorAll('a[href*="rzp.io"]').forEach(function (link) {
+					link.setAttribute('href', '<?php echo esc_url( home_url( '/contact/' ) ); ?>');
+				});
 			var modal = document.getElementById('mindspa-registration-modal');
 			if (!modal) return;
 			var close = function () { modal.hidden = true; document.body.classList.remove('mindspa-modal-open'); };
