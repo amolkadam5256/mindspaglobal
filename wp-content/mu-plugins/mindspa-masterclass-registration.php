@@ -85,7 +85,7 @@ function mindspa_registration_form() {
 add_shortcode( 'mindspa_masterclass_registration', 'mindspa_registration_form' );
 
 add_filter( 'the_content', function ( $content ) {
-	$contact_url = esc_url( home_url( '/contact/' ) );
+	$contact_url = esc_url( home_url( '/#contact' ) );
 	return preg_replace( '/href=(["\'])https?:\/\/rzp\.io\/[^"\']+\1/i', 'href=$1' . $contact_url . '$1', $content );
 }, 20 );
 
@@ -145,7 +145,7 @@ add_action( 'wp_footer', function () {
 	<script>
 			document.addEventListener('DOMContentLoaded', function () {
 				document.querySelectorAll('a[href*="rzp.io"]').forEach(function (link) {
-					link.setAttribute('href', '<?php echo esc_url( home_url( '/contact/' ) ); ?>');
+					link.setAttribute('href', '<?php echo esc_url( home_url( '/#contact' ) ); ?>');
 				});
 			var modal = document.getElementById('mindspa-registration-modal');
 			if (!modal) return;
