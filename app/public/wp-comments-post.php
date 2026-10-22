@@ -1,0 +1,1 @@
+../../wp-comments-post.php

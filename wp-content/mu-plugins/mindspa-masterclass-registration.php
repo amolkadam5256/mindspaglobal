@@ -34,10 +34,9 @@ function mindspa_handle_registration() {
 	$city  = mindspa_registration_value( 'city' );
 	$profession = mindspa_registration_value( 'profession' );
 	$goal = mindspa_registration_value( 'goal' );
-	$language = mindspa_registration_value( 'language' );
 	$mode = mindspa_registration_value( 'session_mode' );
 
-	if ( ! $name || ! is_email( $email ) || ! $phone || ! $city || ! $profession || ! $language || empty( $_POST['consent'] ) ) {
+	if ( ! $name || ! is_email( $email ) || ! $phone || ! $city || ! $profession || empty( $_POST['consent'] ) ) {
 		wp_safe_redirect( add_query_arg( 'mindspa_registration', 'invalid', wp_get_referer() ?: home_url( '/' ) ) );
 		exit;
 	}
@@ -48,7 +47,7 @@ function mindspa_handle_registration() {
 		'post_title'  => $name . ' – ' . current_time( 'Y-m-d H:i' ),
 		'meta_input'  => array(
 			'email' => $email, 'phone' => $phone, 'city' => $city, 'profession' => $profession,
-			'goal' => $goal, 'language' => $language, 'session_mode' => $mode,
+			'goal' => $goal, 'session_mode' => $mode,
 			'consent' => 'Yes', 'source' => 'Neuro-Mind Gym Masterclass Landing Page',
 			'utm_source' => mindspa_registration_value( 'utm_source' ),
 			'utm_medium' => mindspa_registration_value( 'utm_medium' ),
@@ -59,7 +58,7 @@ function mindspa_handle_registration() {
 	$subject = 'New Neuro-Mind Gym Masterclass Registration – ' . $name;
 	$message = "New registration received from the MindSpa Global website.\n\n" .
 		"Full Name: {$name}\nEmail: {$email}\nPhone / WhatsApp: {$phone}\nCity: {$city}\n" .
-		"Profession: {$profession}\nPrimary Interest: {$goal}\nPreferred Language: {$language}\n" .
+		"Profession: {$profession}\nPrimary Interest: {$goal}\n" .
 		"Session Mode: {$mode}\nConsent: Yes\nSubmission Date: " . current_time( 'mysql' ) .
 		"\nSource: Neuro-Mind Gym Masterclass Landing Page";
 	wp_mail( 'training.mindspaglobal@gmail.com', $subject, $message, array( 'Reply-To: ' . $email ) );
@@ -78,7 +77,7 @@ function mindspa_registration_form() {
 	$output .= '<p><label>Full Name *<input type="text" name="full_name" required></label></p><p><label>Email Address *<input type="email" name="email" required></label></p><p><label>Phone / WhatsApp Number *<input type="tel" name="phone" required></label></p><p><label>City / Location *<input type="text" name="city" required></label></p>';
 	$output .= '<p><label>Profession *<select name="profession" required><option value="">Select profession</option><option>Working Professional</option><option>Business Owner / Entrepreneur</option><option>Student</option><option>Homemaker</option><option>Corporate Leader / HR</option><option>Other</option></select></label></p>';
 	$output .= '<p><label>What would you most like to work on?<select name="goal"><option>Overthinking & Stress Management</option><option>Focus & Concentration</option><option>Confidence & Career Growth</option><option>Relationships & Emotional Wellbeing</option><option>Better Sleep & Relaxation</option><option>Other</option></select></label></p>';
-	$output .= '<p><label>Preferred Language *<select name="language" required><option value="">Select language</option><option>Marathi</option><option>Hindi</option><option>English</option></select></label></p><p><label>Preferred Session Mode<select name="session_mode"><option>Online via Zoom</option><option>In-person (if available)</option></select></label></p>';
+	$output .= '<p><label>Preferred Session Mode<select name="session_mode"><option>Online via Zoom</option><option>In-person (if available)</option></select></label></p>';
 	$output .= '<p><label><input type="checkbox" name="consent" value="yes" required> I agree to be contacted by MindSpa Global regarding this masterclass.</label></p><p><button type="submit">Register for Masterclass</button></p></form>';
 	return $output;
 }
@@ -143,12 +142,24 @@ add_action( 'wp_footer', function () {
 				});
 			var modal = document.getElementById('mindspa-registration-modal');
 			if (!modal) return;
+			// The popup belongs to the landing-page hero, so do not show it on
+			// pages that do not use the hero component.
+			var hero = document.querySelector('.neuro-hero');
+			if (!hero) return;
 			var close = function () { modal.hidden = true; document.body.classList.remove('mindspa-modal-open'); };
 			modal.querySelectorAll('[data-mindspa-close]').forEach(function (button) { button.addEventListener('click', close); });
 			document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });
-			if (!sessionStorage.getItem('mindspa_registration_popup_seen')) {
-				setTimeout(function () { modal.hidden = false; document.body.classList.add('mindspa-modal-open'); sessionStorage.setItem('mindspa_registration_popup_seen', '1'); }, 7000);
+			modal.querySelectorAll('form').forEach(function (form) {
+				form.addEventListener('submit', function () {
+					sessionStorage.setItem('mindspa_registration_popup_submitted', '1');
+					close();
+				});
+			});
+			if (sessionStorage.getItem('mindspa_registration_popup_submitted')) {
+				sessionStorage.removeItem('mindspa_registration_popup_submitted');
+				return;
 			}
+			setTimeout(function () { modal.hidden = false; document.body.classList.add('mindspa-modal-open'); }, 1500);
 		});
 	</script>
 	<style>
