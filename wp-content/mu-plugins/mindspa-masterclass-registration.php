@@ -147,7 +147,7 @@ add_action( 'wp_footer', function () {
 			modal.querySelectorAll('[data-mindspa-close]').forEach(function (button) { button.addEventListener('click', close); });
 			document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });
 			if (!sessionStorage.getItem('mindspa_registration_popup_seen')) {
-				setTimeout(function () { modal.hidden = false; document.body.classList.add('mindspa-modal-open'); sessionStorage.setItem('mindspa_registration_popup_seen', '1'); }, 900);
+				setTimeout(function () { modal.hidden = false; document.body.classList.add('mindspa-modal-open'); sessionStorage.setItem('mindspa_registration_popup_seen', '1'); }, 7000);
 			}
 		});
 	</script>
