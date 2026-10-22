@@ -5,6 +5,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Keep public pages cacheable. PixelYourSite's PHP session starts on every
+ * frontend request by default, which sends PHPSESSID and no-cache headers.
+ * Its browser-based tracking remains active without that session.
+ */
+add_action( 'plugins_loaded', function () {
+	if ( function_exists( '\\PixelYourSite\\PYS' ) ) {
+		remove_action( 'wp', array( \PixelYourSite\PYS(), 'controllSessionStart' ), 10 );
+	}
+}, 100 );
+
 add_action( 'init', function () {
 	register_post_type( 'mindspa_registration', array(
 		'labels'       => array( 'name' => 'Masterclass Registrations', 'singular_name' => 'Masterclass Registration' ),
