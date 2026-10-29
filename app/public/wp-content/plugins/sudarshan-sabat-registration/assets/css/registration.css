@@ -1,0 +1,805 @@
+/* ==========================================================================
+   Dr. Dipti Panhalkar — Session Registration Form
+   Dark-gold design system | Astra / Elementor compatible
+   ========================================================================== */
+
+/* ── Design Tokens ─────────────────────────────────────────────────────── */
+.ss-reg-wrapper {
+    --ss-bg:            transparent;
+    --ss-card-bg:       #111111;
+    --ss-card-inner:    #161616;
+    --ss-border:        #c9a84c;
+    --ss-border-dim:    #3a3020;
+    --ss-border-mid:    #7a6530;
+    --ss-gold:          #c9a84c;
+    --ss-gold-light:    #e8c96a;
+    --ss-gold-glow:     rgba(201, 168, 76, 0.22);
+    --ss-white:         #ffffff;
+    --ss-off-white:     #e8e8e8;
+    --ss-muted:         #888888;
+    --ss-muted-light:   #aaaaaa;
+    --ss-blue:          #3a7bd5;
+    --ss-blue-hover:    #2d62b5;
+    --ss-blue-glow:     rgba(58, 123, 213, 0.4);
+    --ss-green:         #25d366;
+    --ss-green-dark:    #1da851;
+    --ss-green-hover:   #128c4f;
+    --ss-green-glow:    rgba(37, 211, 102, 0.3);
+    --ss-error:         #e05252;
+    --ss-error-bg:      rgba(224, 82, 82, 0.1);
+    --ss-radius-sm:     6px;
+    --ss-radius:        10px;
+    --ss-radius-lg:     16px;
+    --ss-radius-xl:     20px;
+    --ss-gap:           16px;
+    --ss-gap-lg:        24px;
+    --ss-font:          'Poppins', 'Segoe UI', Arial, sans-serif;
+    --ss-transition:    0.2s ease;
+
+    font-family: var(--ss-font);
+    box-sizing: border-box;
+}
+
+.ss-reg-wrapper *,
+.ss-reg-wrapper *::before,
+.ss-reg-wrapper *::after {
+    box-sizing: inherit;
+}
+
+/* ── Outer Wrapper ──────────────────────────────────────────────────────── */
+.ss-reg-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 18px 12px 20px;
+    background: transparent !important;
+    min-height: 0;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+.ss-reg-card {
+    width: 100%;
+    max-width: 700px;
+    background: var(--ss-card-bg);
+    border: 1.5px solid var(--ss-border);
+    border-radius: var(--ss-radius-xl);
+    padding: 26px 28px 22px;
+    box-shadow:
+        0 0 0 1px rgba(201, 168, 76, 0.06),
+        0 0 60px rgba(201, 168, 76, 0.1),
+        0 20px 60px rgba(0, 0, 0, 0.7);
+    position: relative;
+}
+
+/* Subtle top accent line */
+.ss-reg-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--ss-radius-xl);
+    background: linear-gradient(180deg, rgba(201,168,76,0.06) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+.ss-reg-header {
+    text-align: center;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ss-border-dim);
+}
+
+/* Headline */
+.ss-reg-title {
+    color: var(--ss-white);
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin: 0 0 16px;
+    line-height: 1.3;
+}
+
+/* Doctor name — gold highlight inside headline */
+.ss-reg-doctor-name {
+    display: block;
+    color: var(--ss-gold);
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 28px var(--ss-gold-glow);
+    line-height: 1.15;
+}
+
+/* Session type pills row */
+.ss-reg-session-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ss-reg-session-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid;
+    line-height: 1;
+}
+
+.ss-reg-session-pill--one {
+    color: var(--ss-gold-light);
+    border-color: var(--ss-border-mid);
+    background: rgba(201, 168, 76, 0.08);
+}
+
+.ss-reg-session-pill--group {
+    color: #7ec8e3;
+    border-color: rgba(126, 200, 227, 0.35);
+    background: rgba(126, 200, 227, 0.07);
+}
+
+.ss-reg-session-divider {
+    color: var(--ss-muted);
+    font-size: 11px;
+    font-style: italic;
+}
+
+.ss-reg-session-meta {
+    margin: 8px 0 0;
+    color: var(--ss-muted-light);
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ═══════════════════════════════════════════
+   NOTICE BANNERS
+═══════════════════════════════════════════ */
+.ss-reg-notice {
+    border-radius: var(--ss-radius);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    display: block;
+    line-height: 1.5;
+}
+
+.ss-reg-notice--error {
+    background: var(--ss-error-bg);
+    border: 1px solid var(--ss-error);
+    color: #ffaaaa;
+}
+
+.ss-reg-notice--success {
+    background: rgba(37, 211, 102, 0.08);
+    border: 1px solid var(--ss-green);
+    color: #7effa8;
+}
+
+/* ═══════════════════════════════════════════
+   FORM LAYOUT
+═══════════════════════════════════════════ */
+.ss-reg-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ── Section label above fields box ──────── */
+.ss-reg-section-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--ss-muted-light);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+}
+
+/* ── Fields box (bordered container) ─────── */
+.ss-reg-fields-box {
+    background: var(--ss-card-inner);
+    border: 1px solid var(--ss-border-dim);
+    border-radius: var(--ss-radius-lg);
+    padding: 20px;
+}
+
+/* ── 2×2 grid ────────────────────────────── */
+.ss-reg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ss-gap);
+}
+
+/* ── Individual field ────────────────────── */
+.ss-reg-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ss-reg-label {
+    color: var(--ss-muted-light);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.ss-reg-required {
+    color: var(--ss-gold);
+    margin-left: 2px;
+}
+
+/* ── Inputs ──────────────────────────────── */
+.ss-reg-input {
+    background: #1c1c1c;
+    border: 1.5px solid var(--ss-border-dim);
+    border-radius: var(--ss-radius);
+    color: var(--ss-white);
+    font-family: var(--ss-font);
+    font-size: 14px;
+    height: 48px;
+    padding: 0 14px;
+    transition: border-color var(--ss-transition), box-shadow var(--ss-transition), background var(--ss-transition);
+    width: 100%;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.ss-reg-input::placeholder {
+    color: #aaa;
+    font-size: 13px;
+    opacity: 1;
+}
+
+.ss-reg-input:hover {
+    border-color: var(--ss-border-mid);
+}
+
+.ss-reg-input:focus {
+    border-color: var(--ss-gold);
+    box-shadow: 0 0 0 3px var(--ss-gold-glow);
+    background: #1f1e1a;
+}
+
+.ss-reg-input.ss-reg-input--error {
+    border-color: var(--ss-error);
+    box-shadow: 0 0 0 3px var(--ss-error-bg);
+}
+
+/* ── Select wrapper ──────────────────────── */
+.ss-reg-select-wrap {
+    position: relative;
+    display: block;
+}
+
+.ss-reg-select {
+    cursor: pointer;
+    padding-right: 38px;
+}
+
+.ss-reg-select option {
+    background: #1c1c1c;
+    color: var(--ss-white);
+}
+
+.ss-reg-select option:disabled {
+    color: #444;
+}
+
+.ss-reg-select-arrow {
+    pointer-events: none;
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ss-gold);
+    display: flex;
+    align-items: center;
+}
+
+/* ── Field error text ─────────────────────── */
+.ss-reg-field-error {
+    color: var(--ss-error);
+    font-size: 11px;
+    font-weight: 500;
+    min-height: 14px;
+    display: block;
+    line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════
+   SESSION QUESTION BOX
+═══════════════════════════════════════════ */
+.ss-reg-question-box {
+    background: var(--ss-card-inner);
+    border: 1px solid var(--ss-border-dim);
+    border-radius: var(--ss-radius-lg);
+    padding: 20px;
+}
+
+.ss-reg-fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ss-reg-legend {
+    color: var(--ss-off-white);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    display: block;
+    width: 100%;
+}
+
+.ss-reg-legend strong {
+    color: var(--ss-gold-light);
+    font-weight: 700;
+}
+
+/* ── Radio cards ─────────────────────────── */
+.ss-reg-radio-group {
+    display: flex;
+    gap: 12px;
+}
+
+.ss-reg-radio-label {
+    flex: 1;
+    cursor: pointer;
+}
+
+/* Visually hidden native radio */
+.ss-reg-radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Card-style radio button */
+.ss-reg-radio-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--ss-border-dim);
+    border-radius: var(--ss-radius);
+    background: #1c1c1c;
+    transition: border-color var(--ss-transition), background var(--ss-transition), box-shadow var(--ss-transition);
+    user-select: none;
+    height: 100%;
+    min-height: 58px;
+}
+
+.ss-reg-radio-label:hover .ss-reg-radio-btn {
+    border-color: var(--ss-border-mid);
+    background: #202020;
+}
+
+/* Radio circle indicator */
+.ss-reg-radio-indicator {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--ss-border-mid);
+    background: transparent;
+    transition: border-color var(--ss-transition), background var(--ss-transition);
+    position: relative;
+}
+
+.ss-reg-radio-indicator::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--ss-gold);
+    opacity: 0;
+    transition: opacity var(--ss-transition);
+}
+
+/* Checked state */
+.ss-reg-radio:checked + .ss-reg-radio-btn {
+    border-color: var(--ss-gold);
+    background: rgba(201, 168, 76, 0.08);
+    box-shadow: 0 0 0 3px var(--ss-gold-glow);
+}
+
+.ss-reg-radio:checked + .ss-reg-radio-btn .ss-reg-radio-indicator {
+    border-color: var(--ss-gold);
+}
+
+.ss-reg-radio:checked + .ss-reg-radio-btn .ss-reg-radio-indicator::after {
+    opacity: 1;
+}
+
+/* Focus ring */
+.ss-reg-radio:focus-visible + .ss-reg-radio-btn {
+    outline: 2px solid var(--ss-gold);
+    outline-offset: 2px;
+}
+
+/* Radio text block */
+.ss-reg-radio-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ss-reg-radio-main {
+    color: var(--ss-white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+}
+
+.ss-reg-radio-sub {
+    color: var(--ss-muted);
+    font-size: 10.5px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.ss-reg-radio:checked + .ss-reg-radio-btn .ss-reg-radio-main {
+    color: var(--ss-gold-light);
+}
+
+/* ═══════════════════════════════════════════
+   SUBMIT BUTTON
+═══════════════════════════════════════════ */
+.ss-reg-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 54px;
+    background: var(--ss-gold);
+    border: none;
+    border-radius: var(--ss-radius);
+    color: var(--ss-white);
+    cursor: pointer;
+    font-family: var(--ss-font);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: background var(--ss-transition), transform 0.15s, box-shadow var(--ss-transition);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.ss-reg-submit:hover:not(:disabled) {
+    background: var(--ss-gold-light);
+    box-shadow: 0 6px 24px var(--ss-gold-glow);
+    transform: translateY(-1px);
+}
+
+.ss-reg-submit:focus-visible {
+    outline: 2px solid var(--ss-gold);
+    outline-offset: 3px;
+}
+
+.ss-reg-submit:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.ss-reg-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading spinner inside button */
+.ss-reg-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ss-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes ss-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════
+   PRIVACY NOTICE
+═══════════════════════════════════════════ */
+.ss-reg-privacy {
+    color: var(--ss-muted);
+    font-size: 11px;
+    text-align: center;
+    margin: -8px 0 0;
+    line-height: 1.6;
+}
+
+.ss-reg-privacy-link {
+    color: var(--ss-gold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color var(--ss-transition);
+}
+
+.ss-reg-privacy-link:hover {
+    color: var(--ss-gold-light);
+}
+
+/* ═══════════════════════════════════════════
+   THANK-YOU PANEL
+═══════════════════════════════════════════ */
+.ss-reg-thankyou {
+    text-align: center;
+    padding: 32px 28px 26px;
+}
+
+/* Animated checkmark circle */
+.ss-reg-thankyou-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: rgba(37, 211, 102, 0.12);
+    border: 2px solid var(--ss-green);
+    color: var(--ss-green);
+    margin: 0 auto 24px;
+    animation: ss-pop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes ss-pop {
+    from { transform: scale(0.3); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Thank-you headline */
+.ss-reg-thankyou-title {
+    color: var(--ss-gold);
+    font-size: clamp(19px, 4vw, 26px);
+    font-weight: 800;
+    margin: 0 0 12px;
+    line-height: 1.3;
+    text-shadow: 0 0 28px var(--ss-gold-glow);
+    animation: ss-fadein 0.4s ease 0.15s both;
+}
+
+/* Doctor name badge */
+.ss-reg-thankyou-brand {
+    display: inline-block;
+    color: var(--ss-white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: rgba(201, 168, 76, 0.1);
+    border: 1px solid var(--ss-border-mid);
+    border-radius: 100px;
+    padding: 5px 16px;
+    margin: 0 0 18px;
+    animation: ss-fadein 0.4s ease 0.2s both;
+}
+
+/* Confirmation message */
+.ss-reg-thankyou-msg {
+    color: var(--ss-muted-light);
+    font-size: 14px;
+    line-height: 1.75;
+    margin: 0 auto 32px;
+    max-width: 440px;
+    animation: ss-fadein 0.4s ease 0.25s both;
+}
+
+/* ── CTA Group (two buttons) ─────────────── */
+.ss-reg-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: ss-fadein 0.4s ease 0.35s both;
+}
+
+.ss-reg-cta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Base CTA button */
+.ss-reg-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+    padding: 16px 28px;
+    border-radius: var(--ss-radius);
+    font-family: var(--ss-font);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background var(--ss-transition), transform 0.15s, box-shadow var(--ss-transition);
+    border: none;
+    cursor: pointer;
+}
+
+.ss-reg-cta-btn:focus-visible {
+    outline: 2px solid var(--ss-gold);
+    outline-offset: 3px;
+}
+
+.ss-reg-cta-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: none !important;
+}
+
+/* CTA 1 — Primary green (Chat on WhatsApp) */
+.ss-reg-cta-btn--primary {
+    background: var(--ss-green);
+    color: #fff;
+}
+
+.ss-reg-cta-btn--primary:hover {
+    background: var(--ss-green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px var(--ss-green-glow);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* CTA 2 — Secondary outlined (Join Group) */
+.ss-reg-cta-btn--secondary {
+    background: transparent;
+    color: var(--ss-green);
+    border: 2px solid var(--ss-green);
+}
+
+.ss-reg-cta-btn--secondary:hover {
+    background: rgba(37, 211, 102, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37, 211, 102, 0.15);
+    color: var(--ss-green);
+    text-decoration: none;
+}
+
+/* CTA icon */
+.ss-reg-cta-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Supporting text below CTA 2 */
+.ss-reg-cta-sub {
+    color: var(--ss-muted);
+    font-size: 11.5px;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 340px;
+    text-align: center;
+}
+
+@keyframes ss-fadein {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Tablet / Mobile
+═══════════════════════════════════════════ */
+@media (max-width: 680px) {
+    .ss-reg-wrapper {
+        padding: 14px 10px 16px;
+    }
+
+    .ss-reg-card {
+        padding: 22px 20px 18px;
+        border-radius: var(--ss-radius-lg);
+    }
+
+    .ss-reg-fields-box,
+    .ss-reg-question-box {
+        padding: 16px 14px;
+    }
+}
+
+@media (max-width: 560px) {
+    /* Stack the 2-col grid to single column */
+    .ss-reg-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stack radio cards vertically */
+    .ss-reg-radio-group {
+        flex-direction: column;
+    }
+
+    .ss-reg-radio-btn {
+        min-height: 52px;
+    }
+
+    .ss-reg-thankyou {
+        padding: 26px 18px 22px;
+    }
+
+    .ss-reg-cta-btn {
+        max-width: 100%;
+    }
+
+    .ss-reg-section-label {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+}
+
+@media (max-width: 400px) {
+    .ss-reg-wrapper {
+        padding: 8px 6px 10px;
+    }
+
+    .ss-reg-card {
+        padding: 18px 12px 14px;
+    }
+
+    .ss-reg-session-row {
+        flex-direction: column;
+        gap: 6px;
+    }
+}
+
+/* ── Utility ────────────────────────────────────────────────────────────── */
+[hidden] {
+    display: none !important;
+}
+
+/* Keep the fields dark when the active theme applies its own white input skin. */
+.ss-reg-wrapper .ss-reg-form .ss-reg-field input.ss-reg-input,
+.ss-reg-wrapper .ss-reg-form .ss-reg-field select.ss-reg-input {
+    background-color: #202020 !important;
+    color: #f2f0eb !important;
+    border-color: #514629 !important;
+    box-shadow: none;
+}
+
+.ss-reg-wrapper .ss-reg-form .ss-reg-field input.ss-reg-input::placeholder {
+    color: #aaa !important;
+    opacity: 1;
+}
+
+.ss-reg-wrapper .ss-reg-form .ss-reg-field input.ss-reg-input:hover,
+.ss-reg-wrapper .ss-reg-form .ss-reg-field select.ss-reg-input:hover {
+    border-color: #92783b !important;
+}
+
+.ss-reg-wrapper .ss-reg-form .ss-reg-field input.ss-reg-input:focus,
+.ss-reg-wrapper .ss-reg-form .ss-reg-field select.ss-reg-input:focus {
+    background-color: #24221c !important;
+    border-color: var(--ss-gold) !important;
+    box-shadow: 0 0 0 3px var(--ss-gold-glow) !important;
+}

@@ -4,6 +4,9 @@ wp-content/uploads/
 app/.envrc
 logs/
 migration-backups/
+app/public/wp-content/uploads/
+app/private/
+app/migration-backups/
 *.sql
 *.tar.gz
 .env*

@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dr. Dipti Panhalkar — Session Registration Form (Demo)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+      background: #0a0a0a;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── Design Tokens ───────────────────── */
+    :root {
+      --bg:             #0a0a0a;
+      --card:           #111111;
+      --card-inner:     #161616;
+      --input-bg:       #1c1c1c;
+      --border-gold:    #c9a84c;
+      --border-dim:     #2e2818;
+      --border-mid:     #7a6530;
+      --gold:           #c9a84c;
+      --gold-light:     #e8c96a;
+      --gold-glow:      rgba(201,168,76,0.22);
+      --white:          #ffffff;
+      --off-white:      #e8e8e8;
+      --muted:          #777777;
+      --muted-light:    #aaaaaa;
+      --blue:           #3a7bd5;
+      --blue-hover:     #2d62b5;
+      --blue-glow:      rgba(58,123,213,0.4);
+      --green:          #25d366;
+      --green-dark:     #1da851;
+      --green-glow:     rgba(37,211,102,0.3);
+      --error:          #e05252;
+      --radius:         10px;
+      --radius-lg:      16px;
+      --radius-xl:      22px;
+      --gap:            16px;
+      --gap-lg:         24px;
+      --transition:     0.2s ease;
+    }
+
+    /* ── Page Wrapper ──────────────────────── */
+    .page {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 18px 12px 20px;
+      min-height: 0;
+    }
+
+    /* ── Card ────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 700px;
+      background: var(--card);
+      border: 1.5px solid var(--border-gold);
+      border-radius: var(--radius-xl);
+      padding: 26px 28px 22px;
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.05),
+        0 0 70px rgba(201,168,76,0.1),
+        0 24px 80px rgba(0,0,0,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(180deg, rgba(201,168,76,0.06) 0%, transparent 100%);
+      pointer-events: none;
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    /* ── Header ─────────────────────────── */
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-dim);
+      position: relative;
+    }
+
+    .headline {
+      color: var(--off-white);
+      font-size: clamp(16px, 3.5vw, 22px);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .doctor-name {
+      display: block;
+      color: var(--gold);
+      font-size: clamp(24px, 5.5vw, 38px);
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      text-shadow: 0 0 32px rgba(201,168,76,0.35);
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    /* Session pills */
+    .session-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .session-meta {
+      margin: 8px 0 0;
+      color: var(--muted-light);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid;
+      line-height: 1;
+    }
+
+    .pill--one {
+      color: var(--gold-light);
+      border-color: var(--border-mid);
+      background: rgba(201,168,76,0.09);
+    }
+
+    .pill--group {
+      color: #7ec8e3;
+      border-color: rgba(126,200,227,0.3);
+      background: rgba(126,200,227,0.07);
+    }
+
+    .pill-or {
+      color: var(--muted);
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    /* ── Section label ───────────────────── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted-light);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* ── Fields Box ──────────────────────── */
+    .fields-box {
+      background: var(--card-inner);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      margin-bottom: var(--gap-lg);
+    }
+
+    /* 2×2 Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .label {
+      color: var(--muted-light);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .label .req {
+      color: var(--gold);
+      margin-left: 2px;
+    }
+
+    .input {
+      background: var(--input-bg);
+      border: 1.5px solid var(--border-dim);
+      border-radius: var(--radius);
+      color: var(--white);
+      font-family: inherit;
+      font-size: 14px;
+      height: 48px;
+      padding: 0 14px;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      width: 100%;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .input::placeholder { color: #3a3a3a; font-size: 13px; }
+    .input:hover         { border-color: var(--border-mid); }
+    .input:focus         { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); background: #1e1d18; }
+    .input.error         { border-color: var(--error); box-shadow: 0 0 0 3px rgba(224,82,82,0.12); }
+
+    /* Select */
+    .select-wrap { position: relative; }
+    .select-wrap svg {
+      position: absolute; right: 13px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      pointer-events: none;
+    }
+
+    /* Field error */
+    .field-error {
+      color: var(--error);
+      font-size: 10.5px;
+      font-weight: 500;
+      min-height: 14px;
+      display: block;
+      line-height: 1.4;
+    }
+
+    /* ── Question Box ────────────────────── */
+    .question-box {
+      background: var(--card-inner);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      margin-bottom: var(--gap-lg);
+    }
+
+    .question-text {
+      color: var(--off-white);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .question-text strong {
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    /* Radio cards */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .radio-label { flex: 1; cursor: pointer; }
+
+    input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .radio-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border-dim);
+      border-radius: var(--radius);
+      background: var(--input-bg);
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      cursor: pointer;
+      min-height: 60px;
+    }
+
+    .radio-label:hover .radio-btn {
+      border-color: var(--border-mid);
+      background: #202020;
+    }
+
+    /* Radio circle */
+    .radio-dot {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border-mid);
+      background: transparent;
+      position: relative;
+      transition: border-color var(--transition);
+    }
+
+    .radio-dot::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    input[type="radio"]:checked + .radio-btn {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    input[type="radio"]:checked + .radio-btn .radio-dot {
+      border-color: var(--gold);
+    }
+
+    input[type="radio"]:checked + .radio-btn .radio-dot::after {
+      opacity: 1;
+    }
+
+    input[type="radio"]:focus-visible + .radio-btn {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .radio-text { display: flex; flex-direction: column; gap: 2px; }
+    .radio-main {
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .radio-sub {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    input[type="radio"]:checked + .radio-btn .radio-main {
+      color: var(--gold-light);
+    }
+
+    /* ── Submit Button ────────────────────── */
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      height: 54px;
+      background: var(--gold);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition), transform 0.15s, box-shadow var(--transition);
+      outline: none;
+      margin-bottom: 14px;
+    }
+
+    .submit-btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px var(--gold-glow);
+    }
+
+    .submit-btn:active { transform: translateY(0); box-shadow: none; }
+    .submit-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Privacy Notice ───────────────────── */
+    .privacy {
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .privacy a {
+      color: var(--gold);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color var(--transition);
+    }
+
+    .privacy a:hover { color: var(--gold-light); }
+
+    /* ── Notice banners ───────────────────── */
+    .notice {
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .notice.show { display: block; }
+    .notice.error { background: rgba(224,82,82,0.1); border: 1px solid var(--error); color: #ffaaaa; }
+    .notice.success { background: rgba(37,211,102,0.08); border: 1px solid var(--green); color: #7effa8; }
+
+    /* ── Thank-You State ──────────────────── */
+    .thankyou {
+      text-align: center;
+      padding: 16px 0 4px;
+      display: none;
+    }
+
+    .ty-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 78px; height: 78px;
+      border-radius: 50%;
+      background: rgba(37,211,102,0.12);
+      border: 2px solid var(--green);
+      color: var(--green);
+      margin: 0 auto 24px;
+      animation: pop 0.45s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.3); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .ty-title {
+      color: var(--gold);
+      font-size: clamp(19px, 4vw, 26px);
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.3;
+      text-shadow: 0 0 28px rgba(201,168,76,0.3);
+      animation: fadein 0.4s ease 0.15s both;
+    }
+
+    .ty-brand {
+      display: inline-block;
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid var(--border-mid);
+      border-radius: 100px;
+      padding: 5px 18px;
+      margin-bottom: 18px;
+      animation: fadein 0.4s ease 0.2s both;
+    }
+
+    .ty-msg {
+      color: var(--muted-light);
+      font-size: 14px;
+      line-height: 1.75;
+      margin: 0 auto 36px;
+      max-width: 440px;
+      animation: fadein 0.4s ease 0.25s both;
+    }
+
+    /* ── CTA Buttons ──────────────────────── */
+    .cta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadein 0.4s ease 0.35s both;
+    }
+
+    .cta-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 360px;
+      padding: 17px 28px;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background var(--transition), transform 0.15s, box-shadow var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .cta-btn:active        { transform: translateY(0) !important; box-shadow: none !important; }
+
+    /* Primary — green solid */
+    .cta-btn--primary { background: var(--green); color: #fff; }
+    .cta-btn--primary:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--green-glow);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* Secondary — green outline */
+    .cta-btn--secondary {
+      background: transparent;
+      color: var(--green);
+      border: 2px solid var(--green);
+    }
+
+    .cta-btn--secondary:hover {
+      background: rgba(37,211,102,0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37,211,102,0.15);
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .cta-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .cta-sub {
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.55;
+      max-width: 340px;
+      text-align: center;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ───────────────────────── */
+    @media (max-width: 640px) {
+      .page { padding: 14px 10px 16px; }
+      .card { padding: 22px 20px 18px; border-radius: var(--radius-lg); }
+      .fields-box, .question-box { padding: 18px 14px; }
+    }
+
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 1fr; }
+      .radio-group { flex-direction: column; }
+      .cta-btn { max-width: 100%; }
+      .section-label { flex-direction: column; align-items: flex-start; gap: 2px; }
+    }
+
+    @media (max-width: 380px) {
+      .page { padding: 8px 6px 10px; }
+      .card { padding: 18px 12px 14px; }
+      .session-row { flex-direction: column; gap: 6px; }
+    }
+
+    /* Demo badge */
+    .demo-badge {
+      position: fixed;
+      top: 14px; right: 14px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid var(--border-gold);
+      border-radius: 100px;
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 5px 14px;
+      text-transform: uppercase;
+      z-index: 100;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="demo-badge">✦ Preview Mode</div>
+
+  <div class="page">
+    <div class="card">
+
+      <!-- ═══════════ HEADER ═══════════ -->
+      <header class="header">
+        <h1 class="headline">
+          Join the Two-Day Group Session with<br>
+          <span class="doctor-name">Dr. Dipti Panhalkar</span>
+        </h1>
+        <div class="session-row">
+          <span class="pill pill--group">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Two-Day Group Session
+          </span>
+        </div>
+        <p class="session-meta">Total duration: 2 hours · Online via Zoom</p>
+      </header>
+
+      <!-- ═══════════ FORM ═══════════ -->
+      <form id="regForm" novalidate>
+
+        <!-- Notice banner -->
+        <div class="notice" id="notice" role="alert" aria-live="polite"></div>
+
+        <!-- Personal Details -->
+        <div class="fields-box">
+          <p class="section-label">Your Details</p>
+          <div class="grid">
+
+            <!-- Full Name -->
+            <div class="field">
+              <label class="label" for="fullName">Full Name <span class="req">*</span></label>
+              <input class="input" type="text" id="fullName" name="full_name" placeholder="Enter your full name" required autocomplete="name" />
+              <span class="field-error" id="fullName-err" role="alert"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="field">
+              <label class="label" for="phone">Phone No. <span class="req">*</span></label>
+              <input class="input" type="tel" id="phone" name="phone" placeholder="e.g. +91 98765 43210" required autocomplete="tel" pattern="[\+]?[0-9\s\-\(\)]{7,20}" />
+              <span class="field-error" id="phone-err" role="alert"></span>
+            </div>
+
+            <!-- Profession -->
+            <div class="field">
+              <label class="label" for="profession">Select Your Profession <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="input" id="profession" name="profession" required>
+                  <option value="" disabled selected>Select your profession</option>
+                  <option value="Business Owner">Business Owner</option>
+                  <option value="Working Professional">Working Professional</option>
+                  <option value="Trainer or Coach">Trainer or Coach</option>
+                  <option value="Student">Student</option>
+                  <option value="Entrepreneur">Entrepreneur</option>
+                  <option value="Freelancer">Freelancer</option>
+                  <option value="Other">Other</option>
+                </select>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <span class="field-error" id="profession-err" role="alert"></span>
+            </div>
+
+            <!-- Location -->
+            <div class="field">
+              <label class="label" for="location">Location <span class="req">*</span></label>
+              <input class="input" type="text" id="location" name="location" placeholder="Your city / location" required autocomplete="address-level2" />
+              <span class="field-error" id="location-err" role="alert"></span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Session Interest -->
+        <div class="question-box">
+          <p class="question-text">
+            How serious are you about joining the
+            <strong>two-day group session</strong>?<span style="color:var(--gold);margin-left:2px">*</span>
+          </p>
+
+          <div class="radio-group" role="group" aria-label="Seriousness level">
+
+            <label class="radio-label" for="yes">
+              <input type="radio" id="yes" name="seriousness" value="YES" required />
+              <span class="radio-btn">
+                <span class="radio-dot"></span>
+                <span class="radio-text">
+                  <span class="radio-main">Yes</span>
+                  <span class="radio-sub">I'm ready to book</span>
+                </span>
+              </span>
+            </label>
+
+            <label class="radio-label" for="no">
+              <input type="radio" id="no" name="seriousness" value="NO" />
+              <span class="radio-btn">
+                <span class="radio-dot"></span>
+                <span class="radio-text">
+                  <span class="radio-main">No</span>
+                  <span class="radio-sub">Just exploring</span>
+                </span>
+              </span>
+            </label>
+
+            <label class="radio-label" for="other">
+              <input type="radio" id="other" name="seriousness" value="OTHER" />
+              <span class="radio-btn">
+                <span class="radio-dot"></span>
+                <span class="radio-text">
+                  <span class="radio-main">Other</span>
+                  <span class="radio-sub">I'll decide later</span>
+                </span>
+              </span>
+            </label>
+
+          </div>
+          <span class="field-error" id="seriousness-err" role="alert" style="margin-top:10px;display:block"></span>
+        </div>
+
+        <!-- Submit -->
+        <button class="submit-btn" type="submit" id="submitBtn">
+          <span id="submitText">Submit</span>
+          <span class="spinner" id="spinner" aria-hidden="true"></span>
+        </button>
+
+        <!-- Privacy -->
+        <p class="privacy">
+          By submitting this form, you agree to our
+          <a href="#" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+          and consent to being contacted regarding your session enquiry.
+        </p>
+
+      </form>
+
+      <!-- ═══════════ THANK-YOU ═══════════ -->
+      <div class="thankyou" id="thankyou" aria-live="polite">
+
+        <div class="ty-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+
+        <h2 class="ty-title">Thank You for Submitting This Form!</h2>
+
+        <p class="ty-brand">Dr. Dipti Panhalkar</p>
+
+        <p class="ty-msg">
+          Thank you for your interest in a session with Dr. Dipti Panhalkar.
+          Your details have been received. Connect with us on WhatsApp for
+          further information and next steps.
+        </p>
+
+        <div class="cta-group">
+
+          <!-- CTA 1 — Chat on WhatsApp -->
+          <div class="cta-item">
+            <a
+              href="https://wa.me/919876543210"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cta-btn cta-btn--primary"
+              id="chatBtn"
+            >
+              <svg class="cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.886 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Chat on WhatsApp
+            </a>
+          </div>
+
+          <!-- CTA 2 — Join Session Group -->
+          <div class="cta-item">
+            <a
+              href="https://chat.whatsapp.com/EjCpcY8EyGx3W92Yi8ZIjq"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cta-btn cta-btn--secondary"
+              id="groupBtn"
+            >
+              <svg class="cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.886 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Join the Session Group
+            </a>
+            <p class="cta-sub">
+              Join our WhatsApp group for session updates, guidance, and related information.
+            </p>
+          </div>
+
+        </div>
+      </div><!-- /.thankyou -->
+
+    </div><!-- /.card -->
+  </div><!-- /.page -->
+
+  <script>
+    'use strict';
+
+    const form        = document.getElementById('regForm');
+    const notice      = document.getElementById('notice');
+    const submitBtn   = document.getElementById('submitBtn');
+    const submitText  = document.getElementById('submitText');
+    const spinner     = document.getElementById('spinner');
+    const thankyou    = document.getElementById('thankyou');
+
+    let isSubmitting = false;
+
+    /* ── Helpers ─────────────────────────── */
+    function showNotice(msg, type) {
+      notice.className = 'notice show ' + type;
+      notice.textContent = msg;
+      notice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideNotice() {
+      notice.className = 'notice';
+      notice.textContent = '';
+    }
+
+    function setFieldError(id, msg) {
+      const input = document.getElementById(id);
+      const err   = document.getElementById(id + '-err');
+      if (input) input.classList.add('error');
+      if (err)   err.textContent = msg;
+    }
+
+    function clearFieldError(id) {
+      const input = document.getElementById(id);
+      const err   = document.getElementById(id + '-err');
+      if (input) input.classList.remove('error');
+      if (err)   err.textContent = '';
+    }
+
+    function clearAll() {
+      ['fullName','phone','profession','location'].forEach(clearFieldError);
+      document.getElementById('seriousness-err').textContent = '';
+    }
+
+    function setLoading(on) {
+      submitBtn.disabled     = on;
+      submitBtn.style.opacity = on ? '0.7' : '';
+      submitText.textContent = on ? 'Submitting…' : 'Submit';
+      spinner.style.display  = on ? 'block' : 'none';
+    }
+
+    function showThankyou() {
+      form.style.display     = 'none';
+      thankyou.style.display = 'block';
+      thankyou.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ── Validation ──────────────────────── */
+    function validate(d) {
+      let ok = true;
+
+      if (!d.full_name.trim()) {
+        setFieldError('fullName', 'Full name is required.'); ok = false;
+      } else { clearFieldError('fullName'); }
+
+      const phoneRx = /^\+?[0-9\s\-\(\)]{7,20}$/;
+      if (!d.phone.trim() || !phoneRx.test(d.phone.trim())) {
+        setFieldError('phone', 'Enter a valid phone number.'); ok = false;
+      } else { clearFieldError('phone'); }
+
+      const professions = [
+        'Business Owner','Working Professional','Trainer or Coach',
+        'Student','Entrepreneur','Freelancer','Other'
+      ];
+      if (!d.profession || !professions.includes(d.profession)) {
+        setFieldError('profession', 'Please select your profession.'); ok = false;
+      } else { clearFieldError('profession'); }
+
+      if (!d.location.trim()) {
+        setFieldError('location', 'Location is required.'); ok = false;
+      } else { clearFieldError('location'); }
+
+      if (!d.seriousness) {
+        document.getElementById('seriousness-err').textContent = 'Please select an option.';
+        ok = false;
+      } else {
+        document.getElementById('seriousness-err').textContent = '';
+      }
+
+      return ok;
+    }
+
+    /* ── Inline validation (blur) ─────────── */
+    document.getElementById('fullName').addEventListener('blur', function() {
+      if (this.value.trim()) clearFieldError('fullName');
+    });
+    document.getElementById('phone').addEventListener('blur', function() {
+      if (/^\+?[0-9\s\-\(\)]{7,20}$/.test(this.value.trim())) clearFieldError('phone');
+    });
+    document.getElementById('profession').addEventListener('change', function() {
+      if (this.value) clearFieldError('profession');
+    });
+    document.getElementById('location').addEventListener('blur', function() {
+      if (this.value.trim()) clearFieldError('location');
+    });
+    document.querySelectorAll('input[name="seriousness"]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        document.getElementById('seriousness-err').textContent = '';
+      });
+    });
+
+    /* ── Submit ──────────────────────────── */
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (isSubmitting) return;
+
+      hideNotice();
+      clearAll();
+
+      const data = {
+        full_name:   document.getElementById('fullName').value,
+        phone:       document.getElementById('phone').value,
+        profession:  document.getElementById('profession').value,
+        location:    document.getElementById('location').value,
+        seriousness: (document.querySelector('input[name="seriousness"]:checked') || {}).value || '',
+      };
+
+      if (!validate(data)) {
+        showNotice('Please fill in all required fields correctly.', 'error');
+        const first = form.querySelector('.input.error, input.error');
+        if (first) first.focus();
+        return;
+      }
+
+      isSubmitting = true;
+      setLoading(true);
+
+      /* ── Simulate server call (replace with real AJAX in WordPress) ── */
+      setTimeout(function() {
+        // In WordPress this becomes a real wp.ajax call.
+        // Success:
+        showThankyou();
+
+        // isSubmitting stays true — prevents re-submit after success.
+        // setLoading(false) is not called intentionally.
+      }, 1400);
+    });
+  </script>
+</body>
+</html>
+
