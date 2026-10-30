@@ -1,4 +1,5 @@
 wp-config.php
+!app/wp-config.php
 wp-content/uploads/
 .private/
 app/.envrc
