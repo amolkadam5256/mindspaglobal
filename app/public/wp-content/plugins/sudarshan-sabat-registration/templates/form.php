@@ -26,19 +26,20 @@ $privacy_url = function_exists( 'get_privacy_policy_url' ) ? get_privacy_policy_
 
             <!-- Doctor name — gold headline -->
             <h2 class="ss-reg-title">
-                <?php esc_html_e( 'Join the Two-Day Group Session with', 'ss-registration' ); ?><br>
-                <span class="ss-reg-doctor-name">Dr. Dipti Panhalkar</span>
+                <?php esc_html_e( 'Book Your First Personal Mind Coaching Session', 'ss-registration' ); ?><br>
+                <span class="ss-reg-doctor-name">with Dr. Dipti Panhalkar</span>
             </h2>
+            <p class="ss-reg-session-meta"><?php esc_html_e( 'Psychologist & Mind Coach', 'ss-registration' ); ?></p>
 
             <!-- Session types row -->
-            <div class="ss-reg-session-row" aria-label="<?php esc_attr_e( 'Two-day group session', 'ss-registration' ); ?>">
+            <div class="ss-reg-session-row" aria-label="<?php esc_attr_e( '90-minute session', 'ss-registration' ); ?>">
                 <span class="ss-reg-session-pill ss-reg-session-pill--group">
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <?php esc_html_e( 'Two-Day Group Session', 'ss-registration' ); ?>
+                    <?php esc_html_e( '90-Minute Session', 'ss-registration' ); ?>
                 </span>
             </div>
             <p class="ss-reg-session-meta">
-                <?php esc_html_e( 'Total duration: 2 hours · Online via Zoom', 'ss-registration' ); ?>
+                <?php esc_html_e( 'Online via Zoom', 'ss-registration' ); ?>
             </p>
 
         </header><!-- /.ss-reg-header -->
@@ -169,7 +170,7 @@ $privacy_url = function_exists( 'get_privacy_policy_url' ) ? get_privacy_policy_
                 <fieldset class="ss-reg-fieldset">
                     <legend class="ss-reg-legend">
                         <?php esc_html_e( 'How serious are you about joining the', 'ss-registration' ); ?>
-                        <strong><?php esc_html_e( 'two-day group session', 'ss-registration' ); ?></strong>?
+                        <strong><?php esc_html_e( '90-minute free group session', 'ss-registration' ); ?></strong>?
                         <span class="ss-reg-required" aria-hidden="true">*</span>
                     </legend>
 

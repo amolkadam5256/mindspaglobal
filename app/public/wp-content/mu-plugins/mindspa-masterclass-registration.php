@@ -34,6 +34,90 @@ add_filter( 'the_content', function ( $content ) {
 	return $content;
 }, 20 );
 
+/**
+ * Keep the workshop details consistent on the two public landing pages.
+ * The page content is maintained in Elementor/WordPress, so make these
+ * presentation updates as it renders rather than changing a database dump.
+ */
+function mindspa_update_workshop_details( $content ) {
+	if ( is_admin() || ! is_page() ) {
+		return $content;
+	}
+
+	$content = str_ireplace(
+		array(
+			'<small>DATE</small>',
+			'9th &amp; 10th October <br>(Sat &amp; Sun)',
+			'9th & 10th October <br>(Sat & Sun)',
+			'9th &amp; 10th October<br>(Sat &amp; Sun)',
+			'9th & 10th October<br>(Sat & Sun)',
+			'9th &amp; 10th October',
+			'9th & 10th October',
+			'7:00pm - 8:00pm',
+			'7:00 PM - 8:00 PM',
+			'12 PM - 2 PM',
+			'12 PM–2 PM',
+			'Join 2 Days Masterclass',
+			'2 Days Masterclass',
+			'NEURO-MIND GYM MASTERCLASS (2 Days)',
+			'NEURO-MIND GYM MASTERCLASS<br>(2 Days)',
+			'NEURO-MIND MASTERCLASS  (2 Days)',
+			'NEURO-MIND MASTERCLASS (2 Days)',
+			'2 Days Scientific Masterclass – Neuro Mind GYM',
+			'2 Hours',
+			'Online (Zoom)',
+			'<span>English</span>',
+		),
+		array(
+			'<small>SCHEDULE</small>',
+			'Every Saturday &amp; Sunday',
+			'Every Saturday &amp; Sunday',
+			'Every Saturday &amp; Sunday',
+			'Every Saturday &amp; Sunday',
+			'Every Saturday &amp; Sunday',
+			'Every Saturday &amp; Sunday',
+			'7:00pm - 8:30pm',
+			'7:00 PM - 8:30 PM',
+			'12 PM - 1:30 PM',
+			'12 PM–1:30 PM',
+			'Join the 90-Minute Masterclass',
+			'90-Minute Masterclass',
+			'NEURO-MIND GYM MASTERCLASS (90 Minutes)',
+			'NEURO-MIND GYM MASTERCLASS<br>(90 Minutes)',
+			'NEURO-MIND MASTERCLASS (90 Minutes)',
+			'NEURO-MIND MASTERCLASS (90 Minutes)',
+			'90-Minute Scientific Masterclass – Neuro Mind GYM',
+			'90 Minutes',
+			'Online via Zoom',
+			'<span>English, Hindi &amp; Marathi</span>',
+		),
+		$content
+	);
+	$content = str_ireplace(
+		array( 'फक्त २ दिवसांत', '२ दिवसानंतरच', '२ दिवसांत', '२ दिवस' ),
+		array( 'फक्त ९० मिनिटांत', '९० मिनिटांनंतरच', '९० मिनिटांत', '९० मिनिटे' ),
+		$content
+	);
+	$content = preg_replace( '/\b2\s*[- ]?days?\b/i', '90 minutes', $content );
+	$content = preg_replace( '/\btwo\s*[- ]?days?\b/i', '90 minutes', $content );
+	$content = preg_replace( '/\btwo\s*[- ]?day\b/i', '90-minute', $content );
+
+	// The masterclass page does not currently have a duration row.
+	if ( is_page( 1032 ) && false === stripos( $content, '<small>DURATION</small>' ) ) {
+		$content = preg_replace(
+			'/(7:00pm\s*-\s*8:30pm)(\s*(?:🎥|<small>WHERE<\/small>))/u',
+			'$1<br>⏳ <small>DURATION</small> 90 Minutes$2',
+			$content,
+			1
+		);
+	}
+
+	return $content;
+}
+add_filter( 'the_content', 'mindspa_update_workshop_details', 25 );
+add_filter( 'elementor/widget/render_content', 'mindspa_update_workshop_details', 25 );
+add_filter( 'the_title', 'mindspa_update_workshop_details', 25 );
+
 add_filter( 'the_content', function ( $content ) {
 	static $contact_section_added = false;
 	if ( is_admin() || ( ! is_front_page() && ! is_page( 1032 ) ) || $contact_section_added ) {
@@ -43,7 +127,7 @@ add_filter( 'the_content', function ( $content ) {
 	if ( has_shortcode( $content, 'ss_registration_form' ) ) {
 		return do_shortcode( $content );
 	}
-	return $content . '<section id="contact" class="mindspa-registration-section" aria-label="Register for the two-day group session">' . do_shortcode( '[ss_registration_form]' ) . '</section>';
+	return $content . '<section id="contact" class="mindspa-registration-section" aria-label="Register for the 90-minute free group session">' . do_shortcode( '[ss_registration_form]' ) . '</section>';
 } );
 
 /**
@@ -63,14 +147,16 @@ add_filter( 'the_content', function ( $content ) {
  * accessible footer to the public landing page without changing the theme.
  */
 add_action( 'wp_footer', function () {
-	if ( is_admin() || ( ! is_front_page() && ! is_page( 1032 ) ) ) {
+	if ( is_admin() || ! is_page() ) {
 		return;
 	}
 
+	$show_landing_footer = is_front_page() || is_page( 1032 );
 	$home_url         = home_url( '/' );
 	$registration_url = is_page( 1032 ) ? get_permalink( 1032 ) . '#contact' : home_url( '/#contact' );
 	$contact_url      = 'mailto:training.mindspaglobal@gmail.com';
 	?>
+	<?php if ( $show_landing_footer ) : ?>
 	<footer class="mindspa-site-footer" role="contentinfo">
 		<div class="mindspa-site-footer__grid">
 			<section class="mindspa-site-footer__brand" aria-label="About MindSpa Global">
@@ -107,14 +193,54 @@ add_action( 'wp_footer', function () {
 		.mindspa-site-footer__bottom p { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 18px 0; font-size: 13px; }
 		@media (max-width: 720px) { .mindspa-site-footer__grid { grid-template-columns: 1fr; gap: 30px; padding: 42px 0 34px; } }
 	</style>
+	<?php endif; ?>
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-			var contactUrl = <?php echo wp_json_encode( $registration_url ); ?>;
-		document.querySelectorAll('a[href*="rzp.io"], a[href*="example.com/register"]').forEach(function (link) {
-				link.setAttribute('href', contactUrl);
-				link.setAttribute('target', '_self');
-				link.removeAttribute('rel');
+			if (<?php echo $show_landing_footer ? 'true' : 'false'; ?>) {
+				var contactUrl = <?php echo wp_json_encode( $registration_url ); ?>;
+				document.querySelectorAll('a[href*="rzp.io"], a[href*="example.com/register"]').forEach(function (link) {
+					link.setAttribute('href', contactUrl);
+					link.setAttribute('target', '_self');
+					link.removeAttribute('rel');
+				});
+			}
+
+			var workshopValues = {
+				schedule: 'Every Saturday & Sunday',
+				time: '12 PM - 1:30 PM',
+				duration: '90 Minutes',
+				language: 'English, Hindi & Marathi',
+				mode: 'Online via Zoom'
+			};
+		document.querySelectorAll('.pi-card, .badge, .details-card').forEach(function (card) {
+				var label = card.querySelector('small');
+				var labelText = label ? label.textContent.trim().toUpperCase() : card.textContent.trim().toUpperCase();
+				var key = null;
+				if (/(DATE|SCHEDULE)/.test(labelText)) key = 'schedule';
+				else if (/TIME/.test(labelText)) key = 'time';
+				else if (/(DURATION)/.test(labelText)) key = 'duration';
+				else if (/LANGUAGE/.test(labelText)) key = 'language';
+				else if (/(MODE|WHERE)/.test(labelText)) key = 'mode';
+				if (!key) return;
+
+				if (key === 'schedule' && label) label.textContent = 'SCHEDULE';
+				var value = card.querySelector('span');
+				if (value) value.textContent = workshopValues[key];
 			});
+
+			var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+			var textNode;
+			while ((textNode = textWalker.nextNode())) {
+				textNode.nodeValue = textNode.nodeValue
+					.replace(/NEURO-MIND GYM MASTERCLASS\s*\(2 Days\)/gi, 'NEURO-MIND GYM MASTERCLASS (90 Minutes)')
+					.replace(/फक्त\s*२\s*दिवसांत/g, 'फक्त ९० मिनिटांत')
+					.replace(/२\s*दिवसानंतरच/g, '९० मिनिटांनंतरच')
+					.replace(/२\s*दिवसांत/g, '९० मिनिटांत')
+					.replace(/२\s*दिवस/g, '९० मिनिटे')
+					.replace(/\b2\s*[- ]?days?\b/gi, '90 minutes')
+					.replace(/\btwo\s*[- ]?days?\b/gi, '90 minutes')
+					.replace(/\btwo\s*[- ]?day\b/gi, '90-minute');
+			}
 		});
 	</script>
 	<?php
