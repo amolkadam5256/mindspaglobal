@@ -36,12 +36,27 @@ add_filter( 'the_content', function ( $content ) {
 
 add_filter( 'the_content', function ( $content ) {
 	static $contact_section_added = false;
-	if ( is_admin() || ( ! is_front_page() && ! is_page( 1032 ) ) || $contact_section_added || has_shortcode( $content, 'ss_registration_form' ) ) {
+	if ( is_admin() || ( ! is_front_page() && ! is_page( 1032 ) ) || $contact_section_added ) {
 		return $content;
 	}
 	$contact_section_added = true;
+	if ( has_shortcode( $content, 'ss_registration_form' ) ) {
+		return do_shortcode( $content );
+	}
 	return $content . '<section id="contact" class="mindspa-registration-section" aria-label="Register for the two-day group session">' . do_shortcode( '[ss_registration_form]' ) . '</section>';
 } );
+
+/**
+ * Replace any shortcode text left behind by page-builder rendering on the two
+ * public registration pages. Core normally handles it at priority 11; this
+ * late pass covers builder output generated after that filter has run.
+ */
+add_filter( 'the_content', function ( $content ) {
+	if ( is_admin() || ( ! is_front_page() && ! is_page( 1032 ) ) || ! shortcode_exists( 'ss_registration_form' ) ) {
+		return $content;
+	}
+	return str_replace( '[ss_registration_form]', do_shortcode( '[ss_registration_form]' ), $content );
+}, 99 );
 
 /**
  * Elementor's canvas template omits the theme footer. Add a lightweight,
