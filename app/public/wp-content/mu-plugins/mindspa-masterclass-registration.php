@@ -6,6 +6,16 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * The registration form is required on the public landing pages even if the
+ * host has not activated it in the regular plugins screen. require_once keeps
+ * this safe when WordPress also loads it from the active plugins list.
+ */
+$registration_plugin = WP_PLUGIN_DIR . '/sudarshan-sabat-registration/sudarshan-sabat-registration.php';
+if ( is_readable( $registration_plugin ) ) {
+	require_once $registration_plugin;
+}
+
+/**
  * Keep public pages cacheable. PixelYourSite's PHP session starts on every
  * frontend request by default, which sends PHPSESSID and no-cache headers.
  * Its browser-based tracking remains active without that session.
