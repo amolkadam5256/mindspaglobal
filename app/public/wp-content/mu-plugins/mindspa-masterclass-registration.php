@@ -31,7 +31,7 @@ add_filter( 'the_content', function ( $content ) {
 	$contact_url = esc_url( $contact_url );
 	$content     = preg_replace( '/href=(["\'])https?:\/\/rzp\.io\/[^"\']+\1/i', 'href=$1' . $contact_url . '$1', $content );
 	$content     = preg_replace( '/href=(["\'])https?:\/\/example\.com\/register\/?\1/i', 'href=$1' . $contact_url . '$1', $content );
-	return str_replace( 'href="#mindspa-registration-modal"', 'href="' . $contact_url . '"', $content );
+	return $content;
 }, 20 );
 
 add_filter( 'the_content', function ( $content ) {
@@ -110,11 +110,10 @@ add_action( 'wp_footer', function () {
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			var contactUrl = <?php echo wp_json_encode( $registration_url ); ?>;
-		document.querySelectorAll('a[href*="rzp.io"], a[href*="example.com/register"], a[href="#mindspa-registration-modal"], [data-mindspa-open-registration]').forEach(function (link) {
+		document.querySelectorAll('a[href*="rzp.io"], a[href*="example.com/register"]').forEach(function (link) {
 				link.setAttribute('href', contactUrl);
 				link.setAttribute('target', '_self');
 				link.removeAttribute('rel');
-				link.removeAttribute('data-mindspa-open-registration');
 			});
 		});
 	</script>

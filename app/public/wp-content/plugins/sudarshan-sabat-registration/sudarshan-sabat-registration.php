@@ -3,7 +3,7 @@
  * Plugin Name: Dr. Dipti Panhalkar Session Registration Form
  * Plugin URI:  https://mindspaglobal.com
  * Description: Single contact-section session form delivered through Web3Forms, with WhatsApp follow-up links.
- * Version:     1.0.8
+ * Version:     1.0.9
  * Author:      Mindspaglobal
  * License:     GPL v2 or later
  * Text Domain: ss-registration
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SS_REG_VERSION', '1.0.8' );
+define( 'SS_REG_VERSION', '1.0.9' );
 define( 'SS_REG_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SS_REG_URL', plugin_dir_url( __FILE__ ) );
 define( 'SS_WEB3FORMS_ACCESS_KEY', 'f1a6a76e-5680-43f4-a8e9-d630f72a65e1' );
@@ -26,6 +26,17 @@ define( 'SS_WHATSAPP_URL', SS_WHATSAPP_GROUP_URL ); // backward-compat alias
  * Enqueue plugin assets on frontend.
  */
 function ss_reg_enqueue_assets() {
+    $needs_registration_assets = is_front_page() || is_page( 1032 );
+
+    if ( ! $needs_registration_assets ) {
+        global $post;
+        $needs_registration_assets = isset( $post ) && $post instanceof WP_Post && has_shortcode( $post->post_content, 'ss_registration_form' );
+    }
+
+    if ( ! $needs_registration_assets ) {
+        return;
+    }
+
     wp_enqueue_style(
         'ss-registration',
         SS_REG_URL . 'assets/css/registration.css',
