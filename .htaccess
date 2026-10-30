@@ -1,0 +1,20 @@
+# Hostinger deploys the repository to public_html, while the LocalWP WordPress
+# document root is stored in app/public. Route public requests into that tree.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Do not rewrite the internal destination a second time.
+RewriteRule ^app/public/ - [L]
+
+# Serve WordPress files and directories from the nested document root.
+RewriteCond %{DOCUMENT_ROOT}/app/public/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/app/public/$1 -d
+RewriteRule ^(.+)$ app/public/$1 [L]
+
+# WordPress pretty permalinks and the site root use the root bootstrap below.
+RewriteRule ^$ app/public/index.php [L]
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
