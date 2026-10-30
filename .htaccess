@@ -7,8 +7,8 @@ RewriteEngine On
 RewriteRule ^app/public/ - [L]
 
 # Serve WordPress files and directories from the nested document root.
-RewriteCond %{DOCUMENT_ROOT}/app/public/$1 -f [OR]
-RewriteCond %{DOCUMENT_ROOT}/app/public/$1 -d
+RewriteCond %{DOCUMENT_ROOT}/app/public%{REQUEST_URI} -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/app/public%{REQUEST_URI} -d
 RewriteRule ^(.+)$ app/public/$1 [L]
 
 # WordPress pretty permalinks and the site root use the root bootstrap below.
